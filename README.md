@@ -1,4 +1,4 @@
-Flavor Comparator widget
+Image Synchronizer widget
 ======================
 
 The synchronize widget is a FIDASH widget that enables you to compare private with public images.
