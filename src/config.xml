@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="UPM-ETSIINF" name="compareimages-widget" version="0.6.0">
+  <details>
+    <title>Compare Images</title>
+    <homepage>https://github.com/fidash/widget-compareimages</homepage>
+    <authors>Miguel Garcia</authors>
+    <email>mgarcia@conwet.com</email>
+    <image></image>
+    <smartphoneimage></smartphoneimage>
+    <description>FIDASH widget to compare flavours</description>
+    <longdescription>DESCRIPTION.md</longdescription>
+    <changelog>doc/changelog.md</changelog>
+    <doc>doc/index.md</doc>
+    <license>Apache</license>
+    <issuetracker>https://github.com/fidash/widget-compareimages/issues</issuetracker>
+  </details>
+
+  <requirements>
+  </requirements>
+
+  <preferences>
+    <preference name="serverUrl" type="text" label="Image Sync URL" description="URL of the Image Sync server." default="http://private-anon-b695433ba-fiwareimagesync.apiary-mock.com/"/>
+    <preference name="user" type="text" label="User" description="User for authenticating with the Image Sync." default="user"/>
+    <preference name="password" type="password" label="Password" description="Password for authenticating with the Image Sync." default="SysT3m4T0sSL4Us3r"/>
+  </preferences>
+  <wiring>
+    <outputendpoint name="compare" type="text" label="To compare" description="To compare" friendcode="image-compare"/>
+  </wiring>
+  <contents src="index.html" useplatformstyle="true"/>
+  <rendering height="25" width="5"/>
+</widget>

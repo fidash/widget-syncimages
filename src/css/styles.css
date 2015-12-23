@@ -1,0 +1,132 @@
+.nav.nav-pills > li {
+    border: 0;
+}
+
+.nav.nav-pills li:not(:last-child) {
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}
+.nav.nav-pills li {
+    border-radius: 0; /* avoid curved divisor corner */
+}
+
+.nav-stacked > li + li {
+    margin-top: 0px;
+}
+
+a:focus {
+    outline: none;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+button:active, .button:active, button:focus, .button:focus, button:hover, .button:hover{
+  border:none !important;
+  outline:none !important;
+}
+
+nav.collapse.in {
+    border: 1px solid #ccc;
+    margin-top: 4px;
+    /* overflow-y: scroll; */
+    /* max-height: 100vh; */
+}
+
+.btn-toolbar > .btn {
+    float: none;
+    font-size: 14px;
+    padding: 2px 3px;
+    border: medium none;
+}
+
+.myheader {
+    /* background-color: #F1F1F2; */
+    background-color: #F8F8F8;
+    border: 1px solid #E7E7E7; /* 1px solid #ccc; */
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-left: 0px;
+    margin-bottom: 1px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.compareBtn {
+    position: fixed;
+    bottom: 0px;
+    margin: auto;
+    left: 0;
+    right: 0;
+}
+
+.itemequal > a {
+    color: white;
+    background-color: #ABABAB; /* #8BB8F1; */
+}
+
+.itemequal > a:hover {
+    color: white;
+    background-color: #787878 !important; /* #66A2ED !important; */
+}
+
+.nav > li > a {
+    padding: 8px 15px;
+}
+
+.Dropdown {
+    position: relative;
+}
+
+.placeholder {
+    width: 100%;
+    padding: 0.2em 0.6em 0.3em;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    color: #FFF;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    background-color: #777;
+}
+
+.placeholder:hover {
+    cursor: pointer;
+}
+
+.Dropdown-menu {
+    position: absolute;
+    margin-top: 4px;
+    top: 21px;
+    left: 5%;
+    width: 90%;
+    height: 100%;
+    z-index: 10;
+}
+
+.Dropdown-option {
+    display: block;
+    padding: 0.2em 0.6em 0.3em;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    color: #FFF;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border: solid 1px;
+    background-color: #777;
+}
+
+.Dropdown-option:hover {
+    cursor: pointer;
+}
+
+.label {
+    font-size: 16px;
+    width: 100%;
+    display: block;
+    border-radius: 0;
+}
