@@ -198,12 +198,10 @@ class App extends Component {
 
     getImages() {
         if (!this.adminRegions || !this.scopeToken) {
-            console.log("CANNOT GET IMAGES...")
             return;
         }
 
         const nRegions = this.adminRegions.length + 1;
-        console.log("GETTING IMAGES FROM " + nRegions + " REGIONS...");
         let imageJoiner = new ImageJoiner(nRegions, this.props.dispatch, setImages);
         let options = {
             method: "GET",
@@ -219,7 +217,6 @@ class App extends Component {
 
         this.adminRegions.forEach(region => {
             options.onSuccess = response => {
-                console.log("REGION IMAGES RECEIVED...")
                 const images = JSON.parse(response.responseText).images;
                 imageJoiner.addImages(images, region);
             };
@@ -227,7 +224,6 @@ class App extends Component {
         });
 
         options.onSuccess = response => {
-            console.log("REGION IMAGES RECEIVED...")
             const images = JSON.parse(response.responseText).images;
             imageJoiner.addImages(images, "Spain2");
         };
@@ -235,7 +231,7 @@ class App extends Component {
     }
 
     synchronize( preferences) {
-        
+
     }
 
     handleImageClick(dispatchf, data) {

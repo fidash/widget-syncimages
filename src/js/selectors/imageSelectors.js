@@ -14,7 +14,6 @@ const findOrEmpty = (def, list) =>
       (typeof list.find(x => x.id === def) !== "undefined") ? def : "";
 
 function notInPriv(flav, priv) {
-    console.log("Fail in notInPriv");
     const privsfilt = priv.filter(f => imagesEqual(flav, f));
 
     return privsfilt.length === 0;

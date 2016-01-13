@@ -12,10 +12,7 @@ export default class ImageJoiner {
 
     deductCounter() {
         this.counter -= 1;
-        console.log(this.counter);
         if (this.counter === 0) {
-            console.log("Reference Images: " + this.referenceImages);
-            console.log("Owner Images: " + this.ownerImages);
             this.dispatchf(this.action(this.referenceImages, this.ownerImages));
         }
     }
