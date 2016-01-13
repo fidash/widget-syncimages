@@ -7,31 +7,30 @@
 import {createSelector} from "reselect";
 
 function imagesEqual(f1, f2) {
-    return (f1.disk === f2.disk &&
-            f1.ram === f2.ram &&
-            f1.vcpus === f2.vcpus);
+    return f1.checksum === f2.checksum;
 }
 
 const findOrEmpty = (def, list) =>
       (typeof list.find(x => x.id === def) !== "undefined") ? def : "";
 
 function notInPriv(flav, priv) {
+    console.log("Fail in notInPriv");
     const privsfilt = priv.filter(f => imagesEqual(flav, f));
 
     return privsfilt.length === 0;
 }
 
-function selectPublicPrivate({privateimages, publicimages: allpublicimages}, filter) {
-    const publicimages = allpublicimages.filter(
-        f => f.public && (!filter || notInPriv(f, privateimages))
-    );
+function selectReferenceImages({ownerImages, referenceImages: allreferenceImages}, filter) {
+    const referenceImages = allreferenceImages ? allreferenceImages.filter(
+        img => img.region === "Spain2" && (!filter || notInPriv(img, ownerImages))
+    ) : [];
 
-    return {publicimages, privateimages};
+    return {referenceImages, ownerImages};
 }
 
-function selectLeftRight(select, publicimages, privateimages) {
-    const left = findOrEmpty(select.left, publicimages);
-    const right = findOrEmpty(select.right, privateimages);
+function selectLeftRight(select, referenceImages, ownerImages) {
+    const left = findOrEmpty(select.left, referenceImages);
+    const right = findOrEmpty(select.right, ownerImages);
 
     return {left, right};
 }
@@ -41,7 +40,7 @@ const filterSelector = state => state.filter;
 const selectSelector = state => state.select;
 const regionsSelector = state => state.regions;
 
-function otherEqual({left, right}, {publicimages, privateimages}) {
+function otherEqual({left, right}, {referenceImages, ownerImages}) {
     if ((left === "" && right === "") || (left !== "" && right !== "")) {
         return {
             equalleft: [],
@@ -54,27 +53,16 @@ function otherEqual({left, right}, {publicimages, privateimages}) {
 
     const isleft = left !== "";
     const compid = (isleft) ? left : right;
-    const complist = (isleft) ? publicimages : privateimages;
+    const complist = (isleft) ? referenceImages : ownerImages;
     const component = complist.find(x => x.id === compid);
 
-    const equalleft = (isleft) ? [] : filterEqualMap(publicimages, component);
-    const equalright = (isleft) ? filterEqualMap(privateimages, component) : [];
+    const equalleft = (isleft) ? [] : filterEqualMap(referenceImages, component);
+    const equalright = (isleft) ? filterEqualMap(ownerImages, component) : [];
 
     return {
         equalleft,
         equalright
     };
-}
-
-function checkRegions(imageList) {
-    let isCorrect = true;
-    for (let i = 0; i<imageList.length && isCorrect === true; i++) {
-        if (!imageList[i].nodes || imageList[i].nodes.length === 0) {
-            isCorrect = false;
-        }
-    }
-
-    return isCorrect;
 }
 
 export const imageSelectors = createSelector(
@@ -83,31 +71,31 @@ export const imageSelectors = createSelector(
     selectSelector,
     regionsSelector,
     (images, filter, select, regions) => {
-        const {publicimages: originalpublic, privateimages: originalprivate} = images;
+        const {referenceImages: originalRefImgs, ownerImages: originalOwnerImgs} = images;
         const {region} = select;
         const regionsList = regions.regions;
-        const inRegion = (image, r) => new Set(image.nodes).has(r);
+        const inRegion = (image, r) => image.region === r;
         const defaultregion = (regionsList.size === 0) ? "" : [...regionsList][0];
         const regionselected = (regionsList.indexOf(region) !== -1 ? region : defaultregion);
-        const newprivateimages = originalprivate.filter(f => inRegion(f, regionselected));
+        const newownerimages = originalOwnerImgs ? originalOwnerImgs.filter(f => inRegion(f, regionselected)) : [];
 
-        const {publicimages, privateimages} = selectPublicPrivate({
-            publicimages: originalpublic,
-            privateimages: newprivateimages
+        const {referenceImages, ownerImages} = selectReferenceImages({
+            referenceImages: originalRefImgs,
+            ownerImages: newownerimages
         }, filter);
-        // const {filter, publicimages} = publicprivate;
-        // const oldprivateimages = publicprivate.privateimages;
+        // const {filter, referenceImages} = publicprivate;
+        // const oldownerImages = publicprivate.ownerImages;
 
-        const {left, right} = selectLeftRight(select, publicimages, privateimages);
-        const {equalleft, equalright} = otherEqual({left, right}, {publicimages, privateimages});
+        const {left, right} = selectLeftRight(select, referenceImages, ownerImages);
+        const {equalleft, equalright} = otherEqual({left, right}, {referenceImages, ownerImages});
 
         return {
             equalleft,
             equalright,
             filter,
             left,
-            privateimages,
-            publicimages,
+            ownerImages,
+            referenceImages,
             region: regionselected,
             regions: [...regionsList],
             right

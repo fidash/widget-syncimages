@@ -7,14 +7,14 @@ import {Nav, NavItem} from "react-bootstrap";
 const ImageList = props => {
     const {activeid, equallist, list, onImageClick} = props;
     const inEqualList = elemid => equallist.filter(x => x === elemid).length > 0;
-    const items = list.map(e =>
+    const items = list ? list.map(e =>
         <NavItem
             className={(inEqualList(e.id)) ? "itemequal" : ""}
             eventKey={e.id}
             key={e.id}
             onMouseDown={ev => ev.preventDefault()}>
           {e.name}
-        </NavItem>);
+        </NavItem>) : [];
 
     return (<Nav activeKey={activeid} bsStyle="pills" onSelect={onImageClick} stacked>
             {items}

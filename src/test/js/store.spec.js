@@ -5,12 +5,12 @@ import {toggleVisibility} from "../../js/actions/index";
 
 describe("Store", () => {
     let store;
-    const expectstate = (filter, publicimages, privateimages, left, right, region, regions) => { // eslint-disable-line max-params
+    const expectstate = (filter, referenceImages, ownerImages, left, right, region, regions) => { // eslint-disable-line max-params
         expect(store.getState()).toEqual({
             filter,
             images: {
-                publicimages,
-                privateimages
+                referenceImages,
+                ownerImages
             },
             select: {
                 left,

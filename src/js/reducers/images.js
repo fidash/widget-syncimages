@@ -3,8 +3,8 @@
 import {SET_IMAGES, MOVE_PUBLIC, MOVE_PRIVATE, SYNC_IMAGE} from "../constants/ActionTypes";
 
 const initialState = {
-    privateimages: [],
-    publicimages: []
+    ownerImages: [],
+    referenceImages: []
 };
 
 function move(from, to, list) {
@@ -30,28 +30,28 @@ function getIndexById(id, list) {
 }
 
 export default function images(state = initialState, action) {
-    const {privateimages, publicimages} = state;
+    const {ownerImages, referenceImages} = state;
 
     switch (action.type) {
     case SET_IMAGES:
         return {
-            privateimages: action.privateimages,
-            publicimages: action.publicimages
+            referenceImages: action.referenceImages,
+            ownerImages: action.ownerImages
         };
     case MOVE_PRIVATE:
         return {
-            publicimages,
-            privateimages: move(action.from, action.to, privateimages)
+            referenceImages,
+            ownerImages: move(action.from, action.to, ownerImages)
         };
     case MOVE_PUBLIC:
         return {
-            privateimages,
-            publicimages: move(action.from, action.to, publicimages)
+            ownerImages,
+            referenceImages: move(action.from, action.to, referenceImages)
         };
     case SYNC_IMAGE:
         return {
-            publicimages,
-            privateimages: action.privateList
+            referenceImages,
+            ownerImages: action.ownerList
         };
     default:
         return state;

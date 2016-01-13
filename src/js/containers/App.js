@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import Selector from "../components/Selector";
 import {toggleVisibility, setImages, setLeft, setRight, clearLR, setRegion, setRegions, deleteImage, copyImage, replaceImage} from "../actions/index";
 import {imageSelectors} from "../selectors/imageSelectors";
+import ImageJoiner from "./ImageJoiner";
 
 class App extends Component {
 
@@ -17,7 +18,6 @@ class App extends Component {
         this.MashupPlatform = window.MashupPlatform;
         this.getOpenStackToken.call(this, this.getProjects);
         this.getAdminRegions.call(this);
-        this.getImages();
     }
 
     clearState() {
@@ -145,12 +145,12 @@ class App extends Component {
             onSuccess: function (response) {
                 let responseBody = JSON.parse(response.responseText);
                 if (responseBody.project.is_cloud_project) {
-                    this.getOpenStackToken(function (response) {
+                    this.getOpenStackToken(function (tokenResponse) {
 
                         // For now we only have one cloud project per user so we don't
                         // control the case of several cloud projects.
                         this.scopeToken = tokenResponse.getHeader('x-subject-token');
-                        this.getImages.call(this)
+                        this.getImages.call(this);
                     }, project);
                 }
             }.bind(this),
@@ -198,48 +198,44 @@ class App extends Component {
 
     getImages() {
         if (!this.adminRegions || !this.scopeToken) {
+            console.log("CANNOT GET IMAGES...")
             return;
         }
 
-        const nRegions = this.adminRegions.length;
-        let images
-
+        const nRegions = this.adminRegions.length + 1;
+        console.log("GETTING IMAGES FROM " + nRegions + " REGIONS...");
+        let imageJoiner = new ImageJoiner(nRegions, this.props.dispatch, setImages);
         let options = {
             method: "GET",
             requestHeaders: {
                 "X-Auth-Token": this.scopeToken,
                 "Accept": "application/json"
             },
-            onSuccess: function (response) {
-                let images = JSON.parse(response.responseText).images;
-                this.props.dispatch(setImages(images));
-            }.bind(this),
-            onFailure: this.clearState.bind(this)
+            onFailure: error => {
+                console.log(error);
+                imageJoiner.deductCounter();
+            }
         };
 
-        MashupPlatform.http.makeRequest(App.CLOUD_URL + "/Spain2/image/v1/detail", options);
+        this.adminRegions.forEach(region => {
+            options.onSuccess = response => {
+                console.log("REGION IMAGES RECEIVED...")
+                const images = JSON.parse(response.responseText).images;
+                imageJoiner.addImages(images, region);
+            };
+            MashupPlatform.http.makeRequest(App.CLOUD_URL + "/" + region + "/image/v1/images/detail?limit=100", options);
+        });
+
+        options.onSuccess = response => {
+            console.log("REGION IMAGES RECEIVED...")
+            const images = JSON.parse(response.responseText).images;
+            imageJoiner.addImages(images, "Spain2");
+        };
+        MashupPlatform.http.makeRequest(App.CLOUD_URL + "/Spain2/image/v1/images/detail", options);
     }
 
     synchronize( preferences) {
-        const sub = this.makeRequest(preferences, "v1/images", "GET");
-
-        sub.map(response => {
-            return JSON.parse(response.response);
-        }).map(data => data.images)
-            .subscribe(data => {
-                // Divide in public/private and set it
-                const privateimages = data.filter(f => !f.public);
-                const publicimages = data.filter(f => f.public);
-
-                // On OK just dispatch everything :)
-                // this.props.dispatch(setImages(data.images));
-                this.props.dispatch(setImages(publicimages, privateimages));
-                this.props.dispatch(clearLR());
-            }, () => {
-                // On error, clean everything!
-                this.props.dispatch(setImages([], []));
-                this.props.dispatch(clearLR());
-            });
+        
     }
 
     handleImageClick(dispatchf, data) {
@@ -295,8 +291,8 @@ class App extends Component {
         };
         const divStyleL = buildDivStyle("left");
         const divStyleR = buildDivStyle("right");
-        const {privateimages,
-               publicimages,
+        const {ownerImages,
+               referenceImages,
                left,
                right,
                dispatch,
@@ -316,12 +312,12 @@ class App extends Component {
                   onSyncImage={this.synchronize()}/>
               <div>
                 <div style={divStyleL}>
-                  <Label>Public Images</Label>
+                  <Label>Reference (Spain2)</Label>
                   <ImageList
                       activeid={left}
                       equallist={equalleft}
-                      list={publicimages}
-                      onImageClick={this.handleImageClick(setLeft, {old: left, myname: "left", othername: "right", mylist: publicimages, otherlist: privateimages})}
+                      list={referenceImages}
+                      onImageClick={this.handleImageClick(setLeft, {old: left, myname: "left", othername: "right", mylist: referenceImages, otherlist: ownerImages})}
                   />
                 </div>
 
@@ -330,8 +326,8 @@ class App extends Component {
                   <ImageList
                       activeid={right}
                       equallist={equalright}
-                      list={privateimages}
-                      onImageClick={this.handleImageClick(setRight, {old: right, myname: "right", othername: "left", mylist: privateimages, otherlist: publicimages})}
+                      list={ownerImages}
+                      onImageClick={this.handleImageClick(setRight, {old: right, myname: "right", othername: "left", mylist: ownerImages, otherlist: referenceImages})}
                   />
                 </div>
               </div>
@@ -349,8 +345,8 @@ App.propTypes = {
     equalright: PropTypes.array.isRequired,
     filter: PropTypes.bool.isRequired,
     left: PropTypes.string.isRequired,
-    privateimages: PropTypes.array.isRequired,
-    publicimages: PropTypes.array.isRequired,
+    ownerImages: PropTypes.array.isRequired,
+    referenceImages: PropTypes.array.isRequired,
     region: PropTypes.string,
     regions: PropTypes.array.isRequired,
     right: PropTypes.string.isRequired

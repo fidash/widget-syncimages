@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="UPM-ETSIINF" name="compareimages-widget" version="0.6.0">
+<widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="UPM-ETSIINF" name="syncimages-widget" version="0.6.7">
   <details>
     <title>Compare Images</title>
-    <homepage>https://github.com/fidash/widget-compareimages</homepage>
-    <authors>Miguel Garcia</authors>
-    <email>mgarcia@conwet.com</email>
+    <homepage>https://github.com/fidash/widget-syncimages</homepage>
+    <authors>Braulio Grana</authors>
+    <email>bgrana@conwet.com</email>
     <image></image>
     <smartphoneimage></smartphoneimage>
-    <description>FIDASH widget to compare flavours</description>
+    <description>FIDASH widget to synchronize images</description>
     <longdescription>DESCRIPTION.md</longdescription>
     <changelog>doc/changelog.md</changelog>
     <doc>doc/index.md</doc>
     <license>Apache</license>
-    <issuetracker>https://github.com/fidash/widget-compareimages/issues</issuetracker>
+    <issuetracker>https://github.com/fidash/widget-syncimages/issues</issuetracker>
   </details>
 
   <requirements>

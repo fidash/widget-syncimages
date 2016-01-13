@@ -6,8 +6,8 @@ export function toggleVisibility() {
     return {type: types.TOGGLE_VISIBILITY};
 }
 
-export function setImages(publicimages, privateimages) {
-    return {type: types.SET_IMAGES, publicimages, privateimages};
+export function setImages(referenceImages, ownerImages) {
+    return {type: types.SET_IMAGES, referenceImages, ownerImages};
 }
 
 export function movePublic(from, to) {

@@ -55,7 +55,8 @@ describe("Header component", () => {
             canclear: false,
             filter: false,
             onClearClick: jasmine.createSpy("onClear"),
-            onFilterClick: jasmine.createSpy("onFilter")
+            onFilterClick: jasmine.createSpy("onFilter"),
+            onSyncImage: jasmine.createSpy("onSync")
         };
 
         auxBtns(props, "success", "Hide equals", true);
@@ -66,7 +67,8 @@ describe("Header component", () => {
             canclear: true,
             filter: false,
             onClearClick: jasmine.createSpy("onClear"),
-            onFilterClick: jasmine.createSpy("onFilter")
+            onFilterClick: jasmine.createSpy("onFilter"),
+            onSyncImage: jasmine.createSpy("onSync")
         };
 
         auxBtns(props, "success", "Hide equals", false);
@@ -77,7 +79,8 @@ describe("Header component", () => {
             canclear: false,
             filter: true,
             onClearClick: jasmine.createSpy("onClear"),
-            onFilterClick: jasmine.createSpy("onFilter")
+            onFilterClick: jasmine.createSpy("onFilter"),
+            onSyncImage: jasmine.createSpy("onSync")
         };
 
         auxBtns(props, "danger", "Show equals", true);
@@ -88,7 +91,8 @@ describe("Header component", () => {
             canclear: true,
             filter: true,
             onClearClick: jasmine.createSpy("onClear"),
-            onFilterClick: jasmine.createSpy("onFilter")
+            onFilterClick: jasmine.createSpy("onFilter"),
+            onSyncImage: jasmine.createSpy("onSync")
         };
 
         auxBtns(props, "danger", "Show equals", false);
