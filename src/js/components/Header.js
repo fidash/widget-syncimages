@@ -12,7 +12,7 @@ const Header = props => {
             <Button bsStyle={(filter) ? "danger" : "success"} onClick={onFilterClick} onMouseDown={ev => ev.preventDefault()}>
             {(filter) ? "Show equals" : "Hide equals"}</Button>
             <Button bsStyle="info" onClick={onSyncImage} onMouseDown={ev => ev.preventDefault()}><i className="fa fa-files-o"></i> Sync</Button>
-            <Button bsStyle="info" disabled={!canclear} onClick={onClearClick} onMouseDown={ev => ev.preventDefault()}><i className="fa fa-eraser"></i> Clear</Button>
+            <Button bsStyle="info" disabled={!canclear} onClick={onClearClick} onMouseDown={ev => ev.preventDefault()}><i className="fa fa-eraser"></i> Deselect</Button>
         </ButtonToolbar>
     );
 };
