@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <widget xmlns="http://wirecloud.conwet.fi.upm.es/ns/macdescription/1" vendor="UPM-ETSIINF" name="syncimages-widget" version="0.6.7">
   <details>
-    <title>Compare Images</title>
+    <title>Sync Images</title>
     <homepage>https://github.com/fidash/widget-syncimages</homepage>
     <authors>Braulio Grana</authors>
     <email>bgrana@conwet.com</email>
