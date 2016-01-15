@@ -56,10 +56,12 @@ class App extends Component {
 
                 let responseBody = JSON.parse(response.responseText);
                 let adminRegions = [];
+                let region;
 
                 responseBody.organizations.forEach(function (organization) {
-                    if (this.isAdmin(organization.roles)) {
-                        adminRegions.push(organization.name.replace(" FIDASH", ""));
+                    region = organization.name.replace(" FIDASH", "");
+                    if (this.isAdmin(organization.roles) && region !== App.REFERENCE_REGION) {
+                        adminRegions.push(region);
                     }
                 }.bind(this));
                 this.props.dispatch(setRegions(adminRegions));
@@ -335,6 +337,7 @@ class App extends Component {
 
 App.CLOUD_URL = "https://cloud.lab.fiware.org";
 App.IDM_URL = "https://account.lab.fiware.org";
+App.REFERENCE_REGION = "Spain2";
 App.propTypes = {
     dispatch: PropTypes.func.isRequired,
     equalleft: PropTypes.array.isRequired,
