@@ -11,7 +11,7 @@ const Selector = props => {
     });
 
     return (
-            <Dropdown onChange={onChange} options={formatOptions} value={sel} />
+            <Dropdown onChange={onChange} controlClassName="fixedHeaderR" menuClassName="fixedHeaderR" options={formatOptions} value={sel} />
     );
 
 };

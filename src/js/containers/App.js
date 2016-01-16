@@ -350,7 +350,8 @@ class App extends Component {
             return {
                 float: float,
                 textAlign: "center",
-                width: "50%"
+                width: "50%",
+                "margin-top": "49px"
             };
         };
         const divStyleL = buildDivStyle("left");
@@ -377,7 +378,7 @@ class App extends Component {
                   onSyncImage={this.synchronize.bind(this)}/>
               <div>
                 <div style={divStyleL}>
-                  <Label>Reference (Spain2)</Label>
+                  <Label className="fixedHeaderL" >Reference (Spain2)</Label>
                   <ImageList
                       activeid={left}
                       equallist={equalleft}
