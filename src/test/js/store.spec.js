@@ -5,7 +5,7 @@ import {toggleVisibility} from "../../js/actions/index";
 
 describe("Store", () => {
     let store;
-    const expectstate = (filter, referenceImages, ownerImages, left, right, region, regions) => { // eslint-disable-line max-params
+    const expectstate = (filter, referenceImages, ownerImages, left, right, region, regions, syncStates) => { // eslint-disable-line max-params
         expect(store.getState()).toEqual({
             filter,
             images: {
@@ -17,11 +17,12 @@ describe("Store", () => {
                 right,
                 region
             },
-            regions
+            regions,
+            syncStates
         });
     };
     const initialvalue = () => {
-        expectstate(false, [], [], "", "", "", {regions: []});
+        expectstate(false, [], [], "", "", "", {regions: []}, {syncStates: {}});
     };
 
     beforeEach(() => {
@@ -36,6 +37,6 @@ describe("Store", () => {
         initialvalue();
         store.dispatch(toggleVisibility());
 
-        expectstate(true, [], [], "", "", "", {regions: []});
+        expectstate(true, [], [], "", "", "", {regions: []}, {syncStates: {}});
     });
 });

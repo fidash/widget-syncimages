@@ -7,7 +7,7 @@ import {Label} from "react-bootstrap";
 import ImageList from "../components/ImageList";
 import Header from "../components/Header";
 import Selector from "../components/Selector";
-import {toggleVisibility, setImages, setLeft, setRight, clearLR, setRegion, setRegions, deleteImage, copyImage, replaceImage} from "../actions/index";
+import {toggleVisibility, setImages, setLeft, setRight, clearLR, setRegion, setRegions, changeSyncState} from "../actions/index";
 import {imageSelectors} from "../selectors/imageSelectors";
 import ImageJoiner from "./ImageJoiner";
 
@@ -67,6 +67,7 @@ class App extends Component {
                 this.props.dispatch(setRegions(adminRegions));
                 this.adminRegions = adminRegions;
                 this.getImages.call(this);
+                this.checkSync.call(this, true);
 
             }.bind(this),
             onFailure: this.clearState.bind(this)
@@ -232,8 +233,73 @@ class App extends Component {
         MashupPlatform.http.makeRequest(App.CLOUD_URL + "/Spain2/image/v1/images/detail", options);
     }
 
-    synchronize( preferences) {
+    synchronize() {
+        let tryCount = 0;
+        const options = {
+            method: "POST",
+            requestHeaders: {
+                "X-Auth-Token": this.scopeToken,
+                "Accept": "application/json"
+            },
+            contentType: "application/json",
+            onFailure: error => {
+                this.errorHandler(error, this.synchronize.bind(this));
+            }.bind(this),
+            onSuccess: response => {
+                this.checkSync.call(this, false);
+            }.bind(this)
+        };
 
+        MashupPlatform.http.makeRequest(App.SYNC_URL + "/regions/" + this.props.region, options);
+    }
+
+    checkSync(autoRefresh) {
+        const options = {
+            method: "GET",
+            requestHeaders: {
+                "X-Auth-Token": this.scopeToken,
+                "Accept": "application/json"
+            },
+            onFailure: error => {
+                this.errorHandler(error, this.checkSync.bind(this, autoRefresh));
+            }.bind(this),
+            onSuccess: response => {
+                const images = JSON.parse(response.responseText).images;
+                let allOk = true;
+                images.forEach(image => {
+                    const status = image.status.split("_")[0];
+                    this.props.dispatch(changeSyncState(image.id, status));
+
+                    if (status !== "ok") {
+                        allOk = false;
+                    }
+                }.bind(this));
+
+                const delay = allOk ? App.POLL_DELAY_OK : App.POLL_DELAY_SYNC;
+                if (allOk) {
+                    this.getImages.call(this);
+                }
+
+                if (autoRefresh) {
+                    setTimeout(() => {
+                        this.checkSync.call(this, autoRefresh);
+                    }.bind(this), delay);
+                }
+            }.bind(this)
+        };
+
+        MashupPlatform.http.makeRequest(App.SYNC_URL + "/regions/" + this.props.region, options);
+    }
+
+    errorHandler(error, retryFunction) {
+        console.log(error);
+        if (tryCount < App.TRY_LIMIT) {
+            setTimeout(() => {
+                retryFunction();
+                tryCount += 1;
+            }, App.RETRY_DELAY);
+        }
+        //TODO else display error message
     }
 
     handleImageClick(dispatchf, data) {
@@ -298,7 +364,8 @@ class App extends Component {
                regions,
                filter,
                equalleft,
-               equalright} = this.props;
+               equalright,
+               syncStates} = this.props;
 
         return (
             <div>
@@ -307,7 +374,7 @@ class App extends Component {
                   filter={filter}
                   onClearClick={() => dispatch(clearLR())}
                   onFilterClick={() => dispatch(toggleVisibility())}
-                  onSyncImage={this.synchronize()}/>
+                  onSyncImage={this.synchronize.bind(this)}/>
               <div>
                 <div style={divStyleL}>
                   <Label>Reference (Spain2)</Label>
@@ -326,6 +393,7 @@ class App extends Component {
                       equallist={equalright}
                       list={ownerImages}
                       onImageClick={this.handleImageClick(setRight, {old: right, myname: "right", othername: "left", mylist: ownerImages, otherlist: referenceImages})}
+                      syncStates={syncStates}
                   />
                 </div>
               </div>
@@ -337,7 +405,12 @@ class App extends Component {
 
 App.CLOUD_URL = "https://cloud.lab.fiware.org";
 App.IDM_URL = "https://account.lab.fiware.org";
+App.SYNC_URL = "http://private-anon-7cf62f491-glancesync.apiary-mock.com";
 App.REFERENCE_REGION = "Spain2";
+App.TRY_LIMIT = 15;
+App.RETRY_DELAY = 2000;
+App.POLL_DELAY_OK = 30000;
+App.POLL_DELAY_SYNC = 2000;
 App.propTypes = {
     dispatch: PropTypes.func.isRequired,
     equalleft: PropTypes.array.isRequired,
@@ -348,7 +421,8 @@ App.propTypes = {
     referenceImages: PropTypes.array.isRequired,
     region: PropTypes.string,
     regions: PropTypes.array.isRequired,
-    right: PropTypes.string.isRequired
+    right: PropTypes.string.isRequired,
+    syncStates: PropTypes.object
 };
 
 export default connect(imageSelectors)(App);

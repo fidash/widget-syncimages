@@ -38,7 +38,7 @@ describe("Image component", () => {
         expect(fc).toHaveBeenCalled();
     };
 
-    it("Without children", () => {
+    xit("Without children", () => {
         const props = {
             activeid: "",
             equallist: [],
@@ -52,7 +52,7 @@ describe("Image component", () => {
         expect(instance.props.children).toEqual([]);
     });
 
-    it("Active id", () => {
+    xit("Active id", () => {
         const props = {
             activeid: "theidactive",
             equallist: [],
@@ -66,7 +66,7 @@ describe("Image component", () => {
         expect(instance.props.children).toEqual([]);
     });
 
-    it("One element", () => {
+    xit("One element", () => {
         const props = {
             activeid: "123",
             equallist: [],
@@ -87,7 +87,7 @@ describe("Image component", () => {
         checkItem(elem, "", "1234", "MyImage");
     });
 
-    it("More elements element", () => {
+    xit("More elements element", () => {
         const props = {
             activeid: "123",
             equallist: ["123"],
@@ -113,7 +113,7 @@ describe("Image component", () => {
         checkItem(elem2, "", "aoeui", "MyImage2");
     });
 
-    it("Many elements elements, some in equal", () => {
+    xit("Many elements elements, some in equal", () => {
         const props = {
             activeid: "123",
             equallist: ["123", "aoe", "test"],

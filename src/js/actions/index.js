@@ -34,8 +34,8 @@ export function clearLR() {
     return {type: types.CLEAR_LR};
 }
 
-export function syncImage(privateList) {
-  return {type: types.SYNC_IMAGE, privateList};
+export function changeSyncState(imageId, status) {
+  return {type: types.CHANGE_SYNC_STATE, imageId, status};
 }
 
 export function setRegions(regions) {

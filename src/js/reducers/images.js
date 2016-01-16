@@ -1,6 +1,6 @@
 "use strict";
 
-import {SET_IMAGES, MOVE_PUBLIC, MOVE_PRIVATE, SYNC_IMAGE} from "../constants/ActionTypes";
+import {SET_IMAGES, MOVE_PUBLIC, MOVE_PRIVATE} from "../constants/ActionTypes";
 
 const initialState = {
     ownerImages: [],
@@ -47,11 +47,6 @@ export default function images(state = initialState, action) {
         return {
             ownerImages,
             referenceImages: move(action.from, action.to, referenceImages)
-        };
-    case SYNC_IMAGE:
-        return {
-            referenceImages,
-            ownerImages: action.ownerList
         };
     default:
         return state;
