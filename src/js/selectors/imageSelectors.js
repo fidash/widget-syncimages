@@ -6,8 +6,8 @@
 
 import {createSelector} from "reselect";
 
-function imagesEqual(f1, f2) {
-    return f1.checksum === f2.checksum;
+function imagesEqual(i1, i2) {
+    return i1.checksum === i2.checksum;
 }
 
 const findOrEmpty = (def, list) =>
@@ -19,9 +19,30 @@ function notInPriv(flav, priv) {
     return privsfilt.length === 0;
 }
 
-function selectReferenceImages({ownerImages, referenceImages: allreferenceImages}, filter) {
+function getEqualsList(ownerImages, referenceImages) {
+    let equalsList = [];
+    if (ownerImages && referenceImages) {
+        referenceImages.forEach(image => {
+            if (ownerImages.filter(p => imagesEqual(image, p)).length !== 0) {
+                equalsList.push(image);
+            }
+        });
+    }
+
+    return equalsList;
+}
+
+function inEqualsList(image, equalsList) {
+    return equalsList.filter(i => imagesEqual(i, image)).length !== 0;
+}
+
+function selectImages({ownerImages: allOwnerImages, referenceImages: allreferenceImages}, filter, equalsList) {
     const referenceImages = allreferenceImages ? allreferenceImages.filter(
-        img => img.region === "Spain2" && (!filter || notInPriv(img, ownerImages))
+        img => !filter || !inEqualsList(img, equalsList)
+    ) : [];
+
+    const ownerImages = allOwnerImages ? allOwnerImages.filter(
+        img => !filter || !inEqualsList(img, equalsList)
     ) : [];
 
     return {referenceImages, ownerImages};
@@ -77,11 +98,12 @@ export const imageSelectors = createSelector(
         const defaultregion = (regionsList.size === 0) ? "" : [...regionsList][0];
         const regionselected = (regionsList.indexOf(region) !== -1 ? region : defaultregion);
         const newownerimages = originalOwnerImgs ? originalOwnerImgs.filter(f => inRegion(f, regionselected)) : [];
+        const equalsList = getEqualsList(newownerimages, originalRefImgs);
 
-        const {referenceImages, ownerImages} = selectReferenceImages({
+        const {referenceImages, ownerImages} = selectImages({
             referenceImages: originalRefImgs,
             ownerImages: newownerimages
-        }, filter);
+        }, filter, equalsList);
         // const {filter, referenceImages} = publicprivate;
         // const oldownerImages = publicprivate.ownerImages;
 
