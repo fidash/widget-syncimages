@@ -20,6 +20,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
+        isDev: grunt.option('target') === 'release' ? '' : '-dev',
 
         bower: {
             install: {
@@ -80,7 +81,9 @@ module.exports = function(grunt) {
             widget: {
                 options: {
                     mode: 'zip',
-                    archive: 'build/<%= pkg.vendor %>_<%= pkg.name %>_<%= pkg.version %>-dev.wgt'
+                    archive: 'dist/<%= pkg.vendor %>_<%= pkg.name %>_<%= pkg.version %><%= isDev %>.wgt',
+                    level: 9,
+                    pretty: true
                 },
                 files: [{
                     expand: true,
@@ -117,7 +120,7 @@ module.exports = function(grunt) {
 
         clean: {
             build: {
-                src: ['build']
+                src: ['build', 'dist']
             },
             temp: {
                 src: ['build/src']
