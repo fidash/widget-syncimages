@@ -1,6 +1,9 @@
 Image Synchronizer widget
 ======================
 
+[![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/fidash/widget-syncimages/master/LICENSE.txt)
+[![Build Status](https://build.conwet.fi.upm.es/jenkins/view/FI-Dash/job/Widget%20SyncImages/badge/icon)](https://build.conwet.fi.upm.es/jenkins/view/FI-Dash/job/Widget%20SyncImages/)
+
 The synchronize widget is a FIDASH widget that enables you to compare private with public images.
 
 Build
